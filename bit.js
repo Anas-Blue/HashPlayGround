@@ -1,29 +1,87 @@
 const input = document.getElementById("input");
-const hashoutput = document.getElementById("hash");
+const hashOutput = document.getElementById("hash");
+const buttons = document.querySelectorAll(".buttons button");
+const resetBtn = document.getElementById("reset");
+const chainDisplay = document.getElementById("chain");
 
-async function generateHash(text){
-    const encoder = new TextEncoder()
-    const textbuffer = encoder.encode(text)
+let activeHashes = [];
 
-    const hash = await crypto.subtle.digest("SHA-256", textbuffer)
-
-    const view = Array.from(new Uint8Array(hash))
-
-    const hashhex = view.map(x => x.toString(16).padStart(2, "0")).join("")
-
-    return hashhex
+// Convert buffer to hex
+function bufferToHex(buffer) {
+  return Array.from(new Uint8Array(buffer))
+    .map(b => b.toString(16).padStart(2, "0"))
+    .join("");
 }
 
+// Generate hash
+async function generateHash(text, algorithm) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(text);
 
-input.addEventListener("input", async()=>{
-    const text = input.value;
+  const hash = await crypto.subtle.digest(algorithm, data);
 
-    if(text === ""){
-        hashoutput.textContent = "---"
-    }else{
-        const inputhash = await generateHash(text)
-        hashoutput.textContent = inputhash
+  return bufferToHex(hash);
+}
+
+// Update chain UI
+function updateChainUI() {
+  if (activeHashes.length === 0) {
+    chainDisplay.textContent = "None";
+  } else {
+    chainDisplay.textContent = activeHashes.join(" → ");
+  }
+}
+
+// Apply all selected hashes
+async function applyHashes(text) {
+
+  if (!text || activeHashes.length === 0) {
+    hashOutput.textContent = "---";
+    return;
+  }
+
+  let result = text;
+
+  for (const algo of activeHashes) {
+    result = await generateHash(result, algo);
+  }
+
+  hashOutput.textContent = result;
+}
+
+// Input handler
+input.addEventListener("input", () => {
+  applyHashes(input.value);
+});
+
+// Button handler
+buttons.forEach(button => {
+  button.addEventListener("click", () => {
+
+    const algo = button.dataset.algo;
+
+    if (activeHashes.includes(algo)) {
+      // Remove
+      activeHashes = activeHashes.filter(a => a !== algo);
+      button.classList.remove("active");
+    } else {
+      // Add (keep order)
+      activeHashes.push(algo);
+      button.classList.add("active");
     }
 
+    updateChainUI();
+    applyHashes(input.value);
+  });
+});
 
-})
+// Reset
+resetBtn.addEventListener("click", () => {
+
+  activeHashes = [];
+
+  hashOutput.textContent = "---";
+  chainDisplay.textContent = "None";
+
+  buttons.forEach(btn => btn.classList.remove("active"));
+});

@@ -1,22 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="./bit.css">
-  <script defer src="./bit.js"></script>
-  <title>Document</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+  <link rel="stylesheet" href="bit.css" />
+  <script defer src="bit.js"></script>
+  <title>Hash Playground</title>
 </head>
 <body>
-  <h1> Hash Change Visualizer</h1>
 
-  <p>Type something below</p>
+  <div class="container">
 
-  <textarea id="input"></textarea>
+    <h1>🔐 Hash Playground</h1>
+    <p>Type something and apply one or more hashes</p>
 
-  <div class="box">
-    <strong>SHA-256 Hash:</strong>
+    <textarea id="input" placeholder="Enter text..."></textarea>
+
+    <div class="buttons">
+
+    <button data-algo="SHA-1">
+      <i class="fa-solid fa-fingerprint"></i>
+      SHA-1
+    </button>
+
+    <button data-algo="SHA-256">
+      <i class="fa-solid fa-shield-halved"></i>
+      SHA-256
+    </button>
+
+    <button data-algo="SHA-384">
+      <i class="fa-solid fa-lock"></i>
+      SHA-384
+    </button>
+
+    <button data-algo="SHA-512">
+      <i class="fa-solid fa-vault"></i>
+      SHA-512
+    </button>
+
+    </div>
+
+
+    <div class="chain">
+      <strong>
+        <i class="fa-solid fa-link"></i>
+        Hash Chain:
+      </strong>
+      <p id="chain">None</p>
+    </div>
+
+
+
+    <div class="actions">
+      <button id="reset">
+      <i class="fa-solid fa-rotate-right"></i>
+      Reset
+      </button>
+    </div>
+
+    <div class="box">
+    <strong>
+      <i class="fa-solid fa-code"></i>
+      Output:
+    </strong>
     <p id="hash">---</p>
+    </div>
+
+
+    <div class="info">
+      <p> You can click multiple buttons to chain hashes.</p>
+    </div>
+
   </div>
+
 </body>
 </html>
